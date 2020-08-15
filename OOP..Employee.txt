@@ -1,0 +1,497 @@
+#include<iostream>
+#include<conio.h>
+#include<string.h>
+#include<fstream>
+using namespace std;
+class Employee
+{
+	protected:
+		int id;
+		char name[30];
+	public:
+		virtual void set_data() = 0;
+		virtual int get_id() = 0;
+		virtual string get_name() = 0;
+		virtual double get_salary() = 0;
+		virtual double get_rate(){}
+};
+class SalariedEmp : public Employee
+{
+	private:
+		double salary;
+	public:
+		SalariedEmp()
+		{
+			id = 1;
+			char name[] = "Null";
+			salary = 1000;
+		}
+		void set_data()
+		{
+			cout<<" Enter the ID of the Employee "<<endl;
+			cin>>id;
+			cin.ignore();
+			cout<<" Enter the name of the Employee "<<endl;
+			gets(name);
+			cout<<" Enter the Salary of the Employee "<<endl;
+			cin>>salary;
+			cout<<" Data Entered Successfully "<<endl;
+		}
+		int get_id()
+		{
+			return id;
+		}
+		string get_name()
+		{
+			return name;
+		}
+		double get_salary()
+		{
+			return salary;
+		}
+};
+			
+class HourlyEmp : public Employee
+{
+	private:
+		double rate;
+		int hours;
+	public:
+		HourlyEmp()
+		{
+			id = 1;
+			char name[] = "Null";
+			rate = 500;
+			hours = 1;
+		}
+		void set_data()
+		{
+			cout<<" Enter the ID of the Employee "<<endl;
+			cin>>id;
+			cin.ignore();
+			cout<<" Enter the name of the Employee "<<endl;
+			gets(name);
+			cout<<" Enter the Rate per hour of the Employee "<<endl;
+			cin>>rate;
+			cout<<" Data Entered Successfully "<<endl;
+		}
+		int get_id()
+		{
+			return id;
+		}
+		string get_name()
+		{
+			return name;
+		}
+		double get_rate()
+		{
+			return rate;
+		}
+		double get_salary()
+		{
+			return rate;
+		}
+};
+
+
+class CommEmp : public Employee
+{
+	private:
+		double comm_rate;
+		double sales;
+	public:
+		CommEmp()
+		{
+			id = 1;
+			char name[] = "Null";
+			comm_rate = 500;
+			sales = 10;
+		}
+		void set_data()
+		{
+			cout<<" Enter the ID of the Employee "<<endl;
+			cin>>id;
+			cin.ignore();
+			cout<<" Enter the name of the Employee "<<endl;
+			gets(name);
+			cout<<" Enter the Commission Rate of the Employee "<<endl;
+			cin>>comm_rate;
+			cout<<" Data Entered Successfully "<<endl;
+		}
+		int get_id()
+		{
+			return id;
+		}
+		string get_name()
+		{
+			return name;
+		}
+		double get_rate()
+		{
+			return comm_rate;
+		}
+		double get_salary()
+		{
+			return comm_rate;			
+		}
+};
+
+
+	
+	
+void SalariedEmployee()  // Add
+{
+	Employee *obj;
+	ofstream ofs("Employee.bin",ios_base::app);
+	obj = new SalariedEmp;
+	obj->set_data();
+	ofs.write(reinterpret_cast<char*>(obj),sizeof(SalariedEmp));
+	ofs.close();
+	getch();
+}
+
+void HourlyEmployee()   // Add
+{
+	Employee *obj;
+	ofstream ofs("Employee.bin",ios_base::app);
+	obj = new HourlyEmp;
+	obj->set_data();
+	ofs.write(reinterpret_cast<char*>(obj),sizeof(HourlyEmp));
+	ofs.close();
+	getch();
+}
+
+void CommissionedEmployee()  // Add
+{
+	Employee *obj;
+	ofstream ofs("Employee.bin",ios_base::app);
+	obj = new CommEmp;
+	obj->set_data();
+	ofs.write(reinterpret_cast<char*>(obj),sizeof(CommEmp));
+	ofs.close();
+	getch();
+}
+	
+	
+
+	
+void DispEmployee()  
+{
+	Employee *obj; int x; int var=0;
+	cout<<"Enter the ID of the Employee to Display "<<endl;
+	cin>>x;
+	obj = new SalariedEmp;
+	ifstream ifs("Employee.bin");
+	while(ifs.read(reinterpret_cast<char*>(obj),sizeof(SalariedEmp)))
+	{
+		if(obj->get_id() == x )
+		{
+			cout<<" ID of the Employee: "<<obj->get_id()<<endl;
+			cout<<" Name of the Employee: "<<obj->get_name()<<endl;
+			cout<<" Salary of the Employee: "<<obj->get_salary()<<endl;
+			var = 1;
+		}
+	}
+	if(var==0)
+	{
+		obj = new HourlyEmp;
+		while(ifs.read(reinterpret_cast<char*>(obj),sizeof(HourlyEmp)))
+		{
+			if(obj->get_id() == x )
+			{
+				cout<<" ID of the Employee: "<<obj->get_id()<<endl;
+				cout<<" Name of the Employee: "<<obj->get_name()<<endl;
+				cout<<" Rate of the Employee: "<<obj->get_salary()<<endl;
+				var = 1;
+			}
+		}
+	}
+	if(var==0)
+	{
+		obj = new CommEmp;
+		while(ifs.read(reinterpret_cast<char*>(obj),sizeof(CommEmp)))
+		{
+			if(obj->get_id() == x )
+			{
+				cout<<" ID of the Employee: "<<obj->get_id()<<endl;
+				cout<<" Name of the Employee: "<<obj->get_name()<<endl;
+				cout<<" Rate of the Employee: "<<obj->get_salary()<<endl;
+				var = 1;
+			}
+		}
+	}
+	delete obj;
+	ifs.close();
+	if(var==0)
+		cout<<" No Data Found "<<endl;
+	getch();
+}
+
+void ModifyEmp()
+{
+	Employee *obj;  int x;  int var=0;
+	cout<<" Enter the ID of the Employee to Modify "<<endl;
+	cin>>x;
+	obj = new SalariedEmp;
+	ofstream ofs("temp.bin");
+	ifstream ifs("Employee.bin");
+	while(ifs.read(reinterpret_cast<char*>(obj),sizeof(SalariedEmp)))
+	{
+		if(obj->get_id() == x)
+		{
+			cout<<" Enter the new data of the Employee "<<endl;
+			obj->set_data();
+			var=1;
+		}
+		ofs.write(reinterpret_cast<char*>(obj),sizeof(SalariedEmp));
+	}
+	if(var==0)
+	{
+		obj = new HourlyEmp;
+		while(ifs.read(reinterpret_cast<char*>(obj),sizeof(HourlyEmp)))
+		{
+			if(obj->get_id() == x)
+			{
+				cout<<" Enter the new data of the Employee "<<endl;
+				obj->set_data();
+				var=1;
+			}
+			ofs.write(reinterpret_cast<char*>(obj),sizeof(HourlyEmp));
+		}
+	}
+	if(var==0)
+	{
+		obj = new CommEmp;
+		while(ifs.read(reinterpret_cast<char*>(obj),sizeof(CommEmp)))
+		{
+			if(obj->get_id() == x)
+			{
+				cout<<" Enter the new data of the Employee "<<endl;
+				obj->set_data();
+				var=1;
+			}
+			ofs.write(reinterpret_cast<char*>(obj),sizeof(CommEmp));
+		}
+	}
+	ifs.close(); ofs.close();
+	if(var==0)
+		cout<<" No such an ID "<<endl;
+	getch();
+}
+
+
+
+
+
+		
+void DeleteEmp()
+{
+	Employee *obj;
+	int x;
+	int var=0;
+	cout<<" Enter the Id you want to delete "<<endl;
+	cin>>x;
+	obj = new SalariedEmp;
+	ifstream ifs("Employee.bin");
+	while(ifs.read(reinterpret_cast<char*>(obj),sizeof(SalariedEmp)))
+	{
+		if(obj->get_id() == x)
+		{
+			var = 1;
+		}
+	}
+	if(var==1)
+	{
+		ofstream ofs("temp.bin");
+		while(ifs.read(reinterpret_cast<char*>(obj),sizeof(SalariedEmp)))
+		{
+			if(obj->get_id() != x)
+			{
+				ofs.write(reinterpret_cast<char*>(obj),sizeof(SalariedEmp));
+			}
+		}
+		ifs.close();ofs.close();
+		ofstream ofs2("Employee.bin");
+		ifstream ifs2("temp.bin");
+		while(ifs2.read(reinterpret_cast<char*>(obj),sizeof(SalariedEmp)))
+		{
+			ofs2.write(reinterpret_cast<char*>(obj),sizeof(SalariedEmp));
+		}
+		cout<<" Data deleted Successfully "<<endl;
+		ofs2.close(); ifs2.close();
+		getch();
+		return;
+	}
+	
+	obj = new HourlyEmp;
+	ifstream ifs3("Employee.bin");
+	while(ifs3.read(reinterpret_cast<char*>(obj),sizeof(HourlyEmp)))
+	{
+		if(obj->get_id() == x)
+		{
+			var = 2;
+		}
+	}
+	if(var==2)
+	{
+		ofstream ofs3("temp.bin");
+		while(ifs3.read(reinterpret_cast<char*>(obj),sizeof(HourlyEmp)))
+		{
+			if(obj->get_id() != x)
+			{
+				ofs3.write(reinterpret_cast<char*>(obj),sizeof(HourlyEmp));
+			}
+		}
+		ifs3.close();ofs3.close();
+		ofstream ofs4("Employee.bin");
+		ifstream ifs4("temp.bin");
+		while(ifs4.read(reinterpret_cast<char*>(obj),sizeof(HourlyEmp)))
+		{
+			ofs4.write(reinterpret_cast<char*>(obj),sizeof(HourlyEmp));
+		}
+		cout<<" Data deleted Successfully "<<endl;
+		ofs4.close(); ifs4.close();
+		getch();
+		return;
+	}
+	
+	obj = new CommEmp;
+	ifstream ifs5("Employee.bin");
+	while(ifs5.read(reinterpret_cast<char*>(obj),sizeof(CommEmp)))
+	{
+		if(obj->get_id() == x)
+		{
+			var = 3;
+		}
+	}
+	if(var==3)
+	{
+		ofstream ofs5("temp.bin");
+		while(ifs5.read(reinterpret_cast<char*>(obj),sizeof(CommEmp)))
+		{
+			if(obj->get_id() != x)
+			{
+				ofs5.write(reinterpret_cast<char*>(obj),sizeof(CommEmp));
+			}
+		}
+		ifs5.close();ofs5.close();
+		ofstream ofs6("Employee.bin");
+		ifstream ifs6("temp.bin");
+		while(ifs6.read(reinterpret_cast<char*>(obj),sizeof(CommEmp)))
+		{
+			ofs6.write(reinterpret_cast<char*>(obj),sizeof(CommEmp));
+		}
+		cout<<" Data deleted Successfully "<<endl;
+		ofs6.close(); ifs6.close();
+		getch();
+		return;
+	}
+	cout<<" No Such an ID "<<endl;
+	getch();
+}
+
+void calcSalary()
+{
+	Employee *obj; int x; int var=0;
+	cout<<"Enter the ID of the Employee to Calculate Salary "<<endl;
+	cin>>x;
+	obj = new SalariedEmp;
+	ifstream ifs("Employee.bin");
+	while(ifs.read(reinterpret_cast<char*>(obj),sizeof(SalariedEmp)))
+	{
+		if(obj->get_id() == x )
+		{
+			cout<<" He is a Salaried Employee And its salary is:  "<<obj->get_salary()<<endl;
+			var = 1;
+		}
+	}
+	if(var==0)
+	{
+		obj = new HourlyEmp;
+		while(ifs.read(reinterpret_cast<char*>(obj),sizeof(HourlyEmp)))
+		{
+			if(obj->get_id() == x )
+			{
+				cout<<" He is an Hourly Employee. "<<endl<<obj->get_salary()<<endl;
+				var = 1;
+			}
+		}
+	}
+	if(var==0)
+	{
+		obj = new CommEmp;
+		while(ifs.read(reinterpret_cast<char*>(obj),sizeof(CommEmp)))
+		{
+			if(obj->get_id() == x )
+			{
+				cout<<" He is a commissioned Employee: "<<endl<<obj->get_salary()<<endl;
+				var = 1;
+			}
+		}
+	}
+	delete obj;
+	ifs.close();
+	if(var==0)
+		cout<<" No Data Found "<<endl;
+	getch();
+}
+	
+		
+	
+	
+	
+	
+void AddEmployee()
+{
+	char ch;
+   	while(1)
+   	{
+   	cout<<" 1.Salaried Employee "<<endl;
+   	cout<<" 2.Hourly Employee "<<endl;
+   	cout<<" 3.Comissioned Employee "<<endl;
+   	cout<<" 4.Main Menu "<<endl;
+   	ch = getche();
+   	if(ch=='1')
+   		SalariedEmployee();
+   	else if(ch=='2')
+   		HourlyEmployee();
+   	else if(ch=='3')
+   		CommissionedEmployee();
+   	else if(ch=='4')
+   		break;
+   	else
+   		cout<<" Invalid Input "<<endl;   	
+   }
+   getch();
+}
+int main()
+{
+	char ch;
+   	while(1)
+   	{
+   	system("cls");
+	cout<<" 1.Add Employee "<<endl;
+   	cout<<" 2.Display Employee "<<endl;
+   	cout<<" 3.Modify Employee "<<endl;
+   	cout<<" 4.Delete Employee "<<endl;
+   	cout<<" 5.Calculate Salary of Employee "<<endl;
+   	cout<<" 6.Exit "<<endl;
+   	ch = getche();
+    if(ch=='1')
+      	AddEmployee();
+    else if(ch=='2')
+      	DispEmployee();
+    else if(ch=='3')
+    	ModifyEmp();
+    else if(ch=='4')
+    	DeleteEmp();
+    else if(ch=='5')
+    	calcSalary();
+    else if(ch=='6')
+    	break;
+    else
+    	cout<<" Invalid Input "<<endl;
+   }
+   getch();
+   return 0;
+}
